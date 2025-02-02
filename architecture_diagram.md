@@ -56,25 +56,26 @@ graph TD
     class F,G,H,I processing;
 
 ```
-Explication du flux
-Saisie du nom → L’utilisateur entre le nom de la commune, du département ou de la région.  
+Explication du flux  
 
-Envoi de la requête → Streamlit transmet la requête à l’API Gateway.  
+1) Saisie du nom → L’utilisateur entre le nom de la commune, du département ou de la région.  
 
-Transmission de la requête → L’API Gateway déclenche la fonction Lambda.  
+2) Envoi de la requête → Streamlit transmet la requête à l’API Gateway.  
 
-Lecture des données → La fonction Lambda accède aux fichiers stockés sur S3.  
+3) Transmission de la requête → L’API Gateway déclenche la fonction Lambda.  
 
-Lancement du scraping → Si les données ne sont pas disponibles, la recherche est lancée via SerpAPI.  
+4) Lecture des données → La fonction Lambda accède aux fichiers stockés sur S3.  
 
-Extraction des données → BeautifulSoup extrait les informations utiles depuis les sources en ligne.  
+5) Lancement du scraping → Si les données ne sont pas disponibles, la recherche est lancée via SerpAPI.  
 
-Traitement des données → Pandas transforme et analyse les données récupérées.  
+6) Extraction des données → BeautifulSoup extrait les informations utiles depuis les sources en ligne.  
 
-Création du document → Le fichier PDF de la fiche client est généré.  
+7) Traitement des données → Pandas transforme et analyse les données récupérées.  
 
-Enregistrement du PDF → La fiche est sauvegardée dans AWS S3.  
+8) Création du document → Le fichier PDF de la fiche client est généré.  
 
-Retour de la fiche → La fiche est transmise à l’interface Streamlit.  
+9) Enregistrement du PDF → La fiche est sauvegardée dans AWS S3.  
 
-Affichage du résultat → L’utilisateur voit la fiche client générée  
+10) Retour de la fiche → La fiche est transmise à l’interface Streamlit.  
+
+11) Affichage du résultat → L’utilisateur voit la fiche client générée  

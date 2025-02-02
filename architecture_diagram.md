@@ -7,7 +7,6 @@ graph TD
     %% Définition des sous-groupes
     subgraph Frontend["🖥️ Interface Utilisateur"]
         A["👤 Utilisateur"]
-        B["📱 Interface Streamlit"]
     end
 
     subgraph Backend["☁️ Services AWS"]
@@ -30,17 +29,15 @@ graph TD
     end
 
     %% Flux principal
-    A -->|"1. Saisie du nom"| B
-    B -->|"2. Envoi de la requête"| C
-    C -->|"3. Transmission de la requête"| D
-    D -->|"4. Lecture des données"| E
-    D -->|"5. Lancement du scraping"| H
-    H -->|"6. Extraction des données"| I
-    D -->|"7. Traitement des données"| F
-    F -->|"8. Création du document"| G
-    G -->|"9. Enregistrement du PDF"| E2
-    E -->|"10. Retour de la fiche"| B
-    B -->|"11. Affichage du résultat"| A
+    A -->|"1. Envoi de la requête"| C
+    C -->|"2. Transmission de la requête"| D
+    D -->|"3. Lecture des données"| E
+    D -->|"4. Lancement du scraping"| H
+    H -->|"5. Extraction des données"| I
+    D -->|"6. Traitement des données"| F
+    F -->|"7. Création du document"| G
+    G -->|"8. Enregistrement du PDF"| E2
+    E -->|"9. Retour de la fiche"| A
 
     %% Connexions avec le stockage
     E1 -.-> E
@@ -53,7 +50,21 @@ graph TD
     classDef storage fill:#F1C40F,stroke:#9A7D0A,stroke-width:2px,color:black,font-size:14px;
     classDef processing fill:#2ECC71,stroke:#196F3D,stroke-width:2px,color:white,font-size:14px;
 
-    class A,B frontend;
+    class A frontend;
     class C,D backend;
     class E,E1,E2,E3 storage;
     class F,G,H,I processing;
+
+```
+Explication du flux
+Saisie du nom → L’utilisateur entre le nom de la commune, du département ou de la région.
+Envoi de la requête → Streamlit transmet la requête à l’API Gateway.
+Transmission de la requête → L’API Gateway déclenche la fonction Lambda.
+Lecture des données → La fonction Lambda accède aux fichiers stockés sur S3.
+Lancement du scraping → Si les données ne sont pas disponibles, la recherche est lancée via SerpAPI.
+Extraction des données → BeautifulSoup extrait les informations utiles depuis les sources en ligne.
+Traitement des données → Pandas transforme et analyse les données récupérées.
+Création du document → Le fichier PDF de la fiche client est généré.
+Enregistrement du PDF → La fiche est sauvegardée dans AWS S3.
+Retour de la fiche → La fiche est transmise à l’interface Streamlit.
+Affichage du résultat → L’utilisateur voit la fiche client générée

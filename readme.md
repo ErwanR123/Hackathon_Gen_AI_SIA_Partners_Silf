@@ -1,93 +1,146 @@
-# Projet Hackathon SFIL
+# **Projet Hackathon SFIL - Automatisation des Fiches Clients SPL & Méthode ELECTRE**  
 
-Ce **README** présente en **une seule référence** deux aspects majeurs du projet :
-1. L’**automatisation des fiches clients SPL** à partir de données publiques et internes, grâce à un flux d’IA/Cloud innovant (Value Serp API, AWS Lambda, RAG, Streamlit, etc.).  
-2. L’utilisation de la **méthode ELECTRE** pour hiérarchiser et sélectionner les territoires (communes, départements, régions) selon des préférences ajustables par le client (SFIL).
+## 🏆 **Contexte du Hackathon**  
 
----
-
-## 1. Automatisation des fiches clients SPL
-
-### 1.1 Contexte et Problématique
-
-- **Collectivités & SPL** : elles gèrent une multitude d’informations (budgets, montants de contrats, historiques relationnels, actualités…).  
-- **Problématique** : la mise à jour manuelle de fiches clients est longue, sujette à des erreurs et ne tire pas parti de la puissance des données publiques (sites officiels, Wikipédia, Google Search, etc.).  
-- **Solution proposée** : développer une application IA qui va agréger, nettoyer et présenter automatiquement ces informations dans un **format standardisé** appelé *fiche client SPL*.
-
-### 1.2 Architecture et Approches Clés
-
-#### Value Serp API
-- Interroge Google pour récupérer **des documents financiers** (PDF budgétaires, débats d’orientation) et **des informations contextuelles** (sites officiels, articles de presse).  
-- Permet d’effectuer des recherches ciblées pour chaque collectivité ou SPL.
-
-#### AWS Lambda
-- Lance des **scripts de nettoyage** et de **transformation**.  
-- Les données brutes (PDF, pages HTML, etc.) sont extraites puis **stockées** dans des **buckets S3**.  
-- Les **Lambda** s’exécutent à la demande ou selon un **horaire planifié**, garantissant la fraicheur des données.
-
-#### RAG (Retrieval-Augmented Generation)
-- Utilise la bibliothèque **LangChain** combinée à **Mistral AI API**.  
-- Le fonctionnement :  
-  1. **Recherche** des segments de texte pertinents (chunks) dans la base.  
-  2. **Génération** dynamique du contenu de la fiche (ou réponses chatbot) en se basant sur ces informations récentes.
-- Avantage : la **Réponse** est davantage **contextualisée** et **précise** qu’un simple modèle génératif non guidé.
-
-#### Interface Streamlit
-- Accès **web** à l’ensemble des fiches.  
-- Possibilité de **télécharger** le contenu (PDF) et d’utiliser un **chatbot** pour poser des questions spécifiques (ex : *"Quel est le budget total de la ville en 2023 ?"*).  
-- **Interactive** et facile à mettre en place pour de futurs tests utilisateurs.
-
-### 1.3 Bénéfices Attendus
-
-1. **Rapidité** : génération des fiches clients en quelques secondes (contre plusieurs heures de travail manuel).  
-2. **Fiabilité** : réduction des erreurs humaines grâce à l’automatisation et au cross-checking d’informations sur plusieurs sources.  
-3. **Innovation** : solution utilisant des technos IA et Cloud de pointe, réutilisable pour d’autres cas d’usage.  
-4. **Efficacité** : chaque fiche est automatiquement à jour et permet de se concentrer sur l’analyse plutôt que la collecte fastidieuse.
+Ce projet a été réalisé en **2 jours** lors d’un **hackathon Gen-AI organisé par Sia Partners**.  
+C’était **notre premier hackathon**, et nous avons travaillé en équipe avec **Kevin Wardakhan, Faycal Benaissa, Amine Rouibi, Erwan Ouabdesselam, Sami Hernoune et Mohamed Zouad**.  
 
 ---
 
-## 2. Méthode ELECTRE : Sélection et Classement des Territoires
+### ⚡ **Notre Stratégie de Développement**  
 
-En complément de l’automatisation des fiches, la méthode **ELECTRE** est mise en œuvre pour **classer** les différentes collectivités ou territoires selon **plusieurs critères** financiers et stratégiques (budget, dette, fiscalité, etc.). L’objectif est de **déterminer** lesquels sont prioritaires ou jugés les plus pertinents pour SFIL.
+Notre projet repose sur une **architecture modulaire et automatisée**, exploitant **AWS Lambda, S3, Mistral AI, SerpAPI et BeautifulSoup** pour **générer automatiquement des fiches complètes sur les collectivités locales** à partir de **données publiques et internes**.  
 
-### 2.1 But de la Méthode ELECTRE
+#### 🏗 **Approche & Priorités**  
 
-- **Aide à la Décision Multicritère** : ELECTRE compare chaque territoire (commune, département, région) à un autre selon un ensemble de **critères**.  
-- **Concordance/Discordance** :  
-  - *Concordance* = dans quelle mesure un territoire i est au moins aussi bon qu’un territoire j.  
-  - *Discordance* = degré auquel i est moins performant que j sur certains critères.  
-- **Résultat** : un **classement final** qui tient compte des préférences de l’utilisateur (poids accordés aux critères, seuils de tolérance).
+1. **Focalisation sur le besoin principal de SFIL** : nous avons priorisé **l’automatisation de la génération des fiches clients SPL**, en assurant une récupération fiable et structurée des **données financières, démographiques, d’investissement et de gouvernance des collectivités**.  
+2. **Architecture cloud-first** : tout le pipeline est **déclenché par API Gateway et AWS Lambda**, garantissant une scalabilité et une mise à jour dynamique des informations.  
+3. **Traitement des données multi-sources** :  
+   - **Données financières et budgétaires** : récupérées depuis **data.gouv.fr et les bases publiques**  
+   - **Données générales et historiques** : extraites via **Wikipédia API et SerpAPI**  
+   - **Investissements & politiques publiques** : scrappés dans des **documents PDF** avec **BeautifulSoup**  
+   - **Synthèse avancée des informations** : réalisée par **Mistral AI**, pour extraire et structurer les points clés  
+4. **Affichage interactif dans Streamlit** :  
+   - **Intégration des données Wikipédia et LinkedIn** pour un accès structuré aux informations  
+   - **Affichage dynamique des fiches clients**  
+   - **Possibilité de télécharger les fiches en PDF**  
+   - **Affichage des résultats de la méthode ELECTRE** directement dans l’interface  
 
-### 2.2 Résultats Fonctionnels Offerts par ELECTRE
+---
 
-- **Classement Objectif** : la sortie du script donne un ordre de **priorité** ou de **préférence** entre les territoires (ex. communes).  
-- **Finesse d’analyse** : on peut introduire des **seuils** pour moduler le comportement (par ex., ignorer les écarts jugés insignifiants, ou éliminer un territoire si sa dette dépasse un certain “veto”).  
-- **Personnalisation** : SFIL peut décider d’augmenter l’importance d’un critère (ex. *“fequip”* pour l’équipement) en lui donnant un poids plus élevé.
+## 🚀 **Objectif**  
 
-### 2.3 Comment le Client (SFIL) Peut Personnaliser Ses Préférences
+Notre solution permet de **générer automatiquement des fiches clients pour les SPL** (Sociétés Publiques Locales) en **récupérant, nettoyant et structurant** les informations clés des collectivités à partir de **sources publiques et internes**.  
 
-Le code proposé offre des **variables** que le client peut ajuster :
+---
 
-1. **Poids** : dans la liste `default_weights = np.array([0.2, 0.2, 0.15, 0.15, 0.2, 0.1])`, chaque valeur correspond à l’importance relative d’un critère.   
-   - *Exemple* : donner plus d’importance à la dette en augmentant la part dédiée à *"fdette"* (pour les communes) ou à *"fded"* (pour les départements/régions).
+## **1. Automatisation des Fiches Clients SPL**  
 
-2. **Seuils** :  
-   - `default_indifference_threshold = 0.05`  
-   - `default_preference_threshold = 0.15`  
-   - `default_veto_threshold = 0.4`  
-   Ces seuils conditionnent la **tolérance** entre deux territoires. En les modifiant, on peut être plus strict ou plus souple sur les **écarts**.
+### 1.1 **Problématique**  
 
-3. **Territoires Sélectionnés** : en modifiant la liste `selected_communess` (ex : `["TROYES", "PAU"]`), on applique ELECTRE **uniquement** aux territoires souhaités. 
+- **Les collectivités & SPL** gèrent une multitude de données (budgets, contrats, historiques, actualités…).  
+- **Problème** : la mise à jour manuelle de ces fiches est **longue, fastidieuse et sujette à erreurs**.  
+- **Solution** : automatiser ce processus en exploitant **l’IA et le Cloud** pour agréger et structurer ces informations.  
 
-Lorsque vous exécutez le script, la fonction :
+### 1.2 **Architecture et Technologies Utilisées**  
 
-```python
-evaluate_sfil_preferences(
-    territories_df = df_communes,
-    selected_territories = ["TROYES", "PAU"],
-    weights = default_weights,
-    indifference_threshold = default_indifference_threshold,
-    preference_threshold = default_preference_threshold,
-    veto_threshold = default_veto_threshold,
-    territory_column = "inom"
-)
+Le projet repose sur une **architecture AWS**, couplée à des **modèles d’IA et des services de scraping**.  
+
+#### **🌍 Scraping et Enrichissement Automatisé**  
+✅ Extraction de données depuis **Wikipédia et LinkedIn**  
+✅ Recherche automatique de **documents budgétaires et articles de presse**  
+✅ Nettoyage et structuration des données avec **Pandas**  
+✅ Analyse et résumé des informations avec **Mistral AI**  
+
+#### **☁️ AWS Lambda & S3**  
+✅ Exécution des scripts d’analyse en **mode serverless**  
+✅ Stockage des données brutes et fiches générées sur **AWS S3**  
+
+#### **🌐 Interface Streamlit**  
+✅ **Affichage interactif des fiches clients**  
+✅ **Intégration des données Wikipédia et LinkedIn** pour fournir des **informations contextuelles sur chaque collectivité**  
+✅ **Affichage des résultats de la méthode ELECTRE pour comparer les collectivités**  
+✅ **Téléchargement des fiches en PDF**  
+
+#### **🧠 Chatbot Mistral AI**  
+✅ (À intégrer) **Chatbot permettant de poser des questions sur les fiches clients et leurs données**  
+
+---
+
+## **2. Méthode ELECTRE : Sélection et Classement des Territoires**  
+
+Nous avons intégré la **méthode ELECTRE** pour **classer et prioriser les collectivités** en fonction de critères financiers et stratégiques.  
+
+### 2.1 **Pourquoi ELECTRE ?**  
+
+- SFIL souhaitait une **approche objective** pour comparer les **communes, départements et régions**.  
+- ELECTRE permet d’identifier **les collectivités prioritaires**, selon **plusieurs critères ajustables** (budget, dette, autofinancement…).  
+
+### 2.2 **Ce que nous voulions intégrer**  
+Nous souhaitions **afficher directement les résultats de la méthode ELECTRE dans l’interface Streamlit**, permettant aux utilisateurs de voir :  
+✅ **Le classement des collectivités analysées**  
+✅ **Des scores comparatifs en fonction des critères définis**  
+✅ **Une personnalisation des paramètres pour affiner l’analyse**  
+
+---
+
+## **3. Fonctionnalités Clés du Projet**  
+
+### 📊 **Extraction & Analyse des Données Financières** (`getfinance.py`, `comparaison.py`)  
+✅ Récupération et analyse des **données financières des collectivités**  
+✅ Classement et comparaison avec **ELECTRE**  
+
+### 🔍 **Scraping et Enrichissement Automatisé** (`scrapping.py`, `wikipedia.py`)  
+✅ Extraction des **informations Wikipédia et LinkedIn**  
+✅ Scraping des **données budgétaires et projets publics**  
+✅ Nettoyage et structuration des données  
+
+### 🌐 **Interface Utilisateur Interactive** (`sia.py`)  
+✅ **Affichage des fiches clients dans Streamlit**  
+✅ **Intégration des données Wikipédia et LinkedIn**  
+✅ **Affichage des résultats de la méthode ELECTRE**  
+✅ **Téléchargement des fiches en PDF**  
+
+### 🤖 **Chatbot Mistral AI** (À intégrer)  
+✅ Assistant permettant de **poser des questions sur les collectivités et leurs données**  
+
+---
+
+## **4. Problèmes Rencontrés & Améliorations Futures**  
+
+### **🚧 Limitations actuelles**  
+1. **Certaines données nécessitent un nettoyage plus approfondi**  
+2. **Optimisation des requêtes API pour améliorer la rapidité et réduire les coûts AWS**  
+3. **Quelques bugs mineurs dans l’affichage Streamlit**  
+
+### **🔜 Améliorations prévues**  
+✅ Ajouter **des visualisations interactives**  
+✅ Finaliser **l’intégration des données Wikipédia et LinkedIn dans l’interface**  
+✅ **Afficher les résultats de la méthode ELECTRE dans Streamlit**  
+✅ **Intégrer le chatbot Mistral AI**  
+✅ **Optimiser les performances du pipeline de traitement**  
+
+---
+
+## **5. Organisation des Fichiers**  
+
+```
+📁 Hackathon_SFIL  
+│── 📜 README.md  # Ce fichier  
+│── 📝 comparaison.py  # Classement ELECTRE  
+│── 📝 getfinance.py  # Extraction des données financières  
+│── 📝 scrapping.py  # Scraping PDF et données publiques  
+│── 📝 wikipedia.py  # Intégration Wikipédia et LinkedIn  
+│── 📝 sia.py  # Interface Streamlit (avec affichage des données et ELECTRE)
+│── 📝 prezi # Présentation du projet 
+└── 📝 test.py  # Génération des tableaux thématiques  
+```
+
+---
+
+## **6. Remerciements & Contacts**  
+🎉 **Merci à Sia Partners pour l’organisation du hackathon !**  
+🔍 **Merci à SFIL pour cette problématique enrichissante !**  
+
+Nous avons appris énormément et avons hâte d'améliorer encore ce projet. 🚀  
+
